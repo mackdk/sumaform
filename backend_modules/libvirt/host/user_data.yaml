@@ -838,6 +838,16 @@ yum_repos:
     gpgcheck: false
     name: amazon2
 
+write_files:
+  # Amazon 2023 does not honour DHCP's domain-search by default
+  - path: /etc/systemd/network/99-use-domains.network
+    permissions: '0644'
+    content: |
+      [Match]
+      Name=*
+      [DHCPv4]
+      UseDomains=true
+
 runcmd:
   # WORKAROUND: cloud-init in Amazon Linux 2023 does not take care of the following
   - echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
