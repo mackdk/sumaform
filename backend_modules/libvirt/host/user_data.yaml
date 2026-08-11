@@ -572,6 +572,13 @@ runcmd:
 
 %{ if image == "ubuntu2604o" ~}
 
+bootcmd:
+  # WORKAROUND: unattended-upgrades holds the apt lock on first boot for 60+ minutes,
+  # preventing cloud-init's package installation. Kill it before cloud-init needs apt.
+  - systemctl stop unattended-upgrades apt-daily.service apt-daily-upgrade.service || true
+  - systemctl kill --kill-who=all apt-daily.service apt-daily-upgrade.service || true
+  - while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 1; done
+
 apt:
   sources:
     tools_pool_repo:
@@ -603,17 +610,17 @@ apt:
 packages:
   - avahi-daemon
   - qemu-guest-agent
+%{ if install_salt_bundle ~}
+  - venv-salt-minion
+%{ else ~}
+  - salt-minion
+%{ endif ~}
 
 runcmd:
   # WORKAROUND: cloud-init in Ubuntu 26.04 does not take care of the following
   - echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
   - systemctl restart ssh
   - systemctl start qemu-guest-agent
-%{ if install_salt_bundle ~}
-  - "DEBIAN_FRONTEND=noninteractive apt-get -yq install venv-salt-minion"
-%{ else ~}
-  - "DEBIAN_FRONTEND=noninteractive apt-get -yq install salt-minion"
-%{ endif ~}
   - "rm -f /etc/apt/sources.list.d/tools_pool_repo.list"
   - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
 %{ endif }
