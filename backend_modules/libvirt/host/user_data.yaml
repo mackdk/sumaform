@@ -599,19 +599,22 @@ apt:
         =eJaK
         -----END PGP PUBLIC KEY BLOCK-----
 
+# WORKAROUND: install via packages directive to avoid apt lock race with cloud-init's own apt-get update
+packages:
+  - avahi-daemon
+  - qemu-guest-agent
+
 runcmd:
   # WORKAROUND: cloud-init in Ubuntu 26.04 does not take care of the following
   - echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
   - systemctl restart ssh
+  - systemctl start qemu-guest-agent
 %{ if install_salt_bundle ~}
-  - "apt-get -yq update"
-  - "DEBIAN_FRONTEND=noninteractive apt-get -yq install venv-salt-minion avahi-daemon qemu-guest-agent"
+  - "DEBIAN_FRONTEND=noninteractive apt-get -yq install venv-salt-minion"
 %{ else ~}
-  - "apt-get -yq update"
-  - "DEBIAN_FRONTEND=noninteractive apt-get -yq install salt-minion avahi-daemon qemu-guest-agent"
+  - "DEBIAN_FRONTEND=noninteractive apt-get -yq install salt-minion"
 %{ endif ~}
   - "rm -f /etc/apt/sources.list.d/tools_pool_repo.list"
-  - systemctl start qemu-guest-agent
   - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
 %{ endif }
 
