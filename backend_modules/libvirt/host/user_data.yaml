@@ -705,6 +705,8 @@ runcmd:
   - "DEBIAN_FRONTEND=noninteractive apt-get -yq install salt-minion avahi-daemon qemu-guest-agent"
 %{ endif ~}
   - "rm -f /etc/apt/sources.list.d/tools_pool_repo.list"
+  # Debian systems do not honour DHCP's domain-search by default
+  - "sed -i -E 's/^hosts:.*/hosts:          files dns myhostname/' /etc/nsswitch.conf"
   - systemctl start qemu-guest-agent
   - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
 %{ endif ~}
@@ -837,6 +839,16 @@ yum_repos:
     enabled: true
     gpgcheck: false
     name: amazon2
+
+write_files:
+  # Amazon 2023 does not honour DHCP's domain-search by default
+  - path: /etc/systemd/network/99-use-domains.network
+    permissions: '0644'
+    content: |
+      [Match]
+      Name=*
+      [DHCPv4]
+      UseDomains=true
 
 runcmd:
   # WORKAROUND: cloud-init in Amazon Linux 2023 does not take care of the following

@@ -10,6 +10,8 @@ network:
 %{ else }
       dhcp4: true
       dhcp6: false
+      dhcp4-overrides:
+        use-domains: true
 %{ endif }
 %{ else }
 network:
