@@ -40,7 +40,7 @@ runcmd:
 %{ endif ~}
   - zypper --non-interactive install venv-salt-minion avahi avahi-lang openssh-server-config-rootlogin which ca-certificates ca-certificates-suse
   - systemctl restart sshd
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 # end of Tumbleweed block
 %{ endif ~}
 
@@ -75,7 +75,7 @@ runcmd:
 %{ else ~}
   - "yum -y install salt-minion avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "centos8o" ~}
@@ -117,7 +117,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "centos9o" ~}
@@ -159,7 +159,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "opensuse156o" || image == "opensuse160o" ~}
@@ -197,7 +197,7 @@ runcmd:
   - "zypper --non-interactive modifyservice --disable openSUSE || true"
   - "zypper --non-interactive removeservice openSUSE || true"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "sles12sp5o" ~}
@@ -220,7 +220,7 @@ runcmd:
 %{ else ~}
   - "zypper -n in avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "sles15sp4o" ~}
@@ -256,7 +256,7 @@ runcmd:
   # the SUSE certificates are needed because of the containerized proxy tests
   - "zypper -n in ca-certificates-suse"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "sles15sp5o" ~}
@@ -279,7 +279,7 @@ runcmd:
 %{ else ~}
   - "zypper -n in avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "sles15sp6o" ~}
@@ -302,7 +302,7 @@ runcmd:
 %{ else ~}
   - "zypper -n in avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "sles15sp7o" ~}
@@ -326,7 +326,7 @@ runcmd:
   - "zypper -n in avahi avahi-lang nss-mdns qemu-guest-agent iptables"
 %{ endif ~}
   - "zypper -n removerepo --all"
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "sles160o" ~}
@@ -353,7 +353,7 @@ runcmd:
 %{ else ~}
   - "zypper -n in avahi avahi-lang nss-mdns qemu-guest-agent iptables"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "slemicro55o" ~}
@@ -518,7 +518,7 @@ runcmd:
 %{ endif ~}
   - "rm -f /etc/apt/sources.list.d/tools_pool_repo.list"
   - systemctl start qemu-guest-agent
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - dpkg --list | grep '^ii' > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "ubuntu2404o" ~}
@@ -567,7 +567,7 @@ runcmd:
 %{ endif ~}
   - "rm -f /etc/apt/sources.list.d/tools_pool_repo.list"
   - systemctl start qemu-guest-agent
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - dpkg --list | grep '^ii' > /installed_packages.txt
 %{ endif }
 
 %{ if image == "ubuntu2604o" ~}
@@ -622,7 +622,7 @@ runcmd:
   - systemctl restart ssh
   - systemctl start qemu-guest-agent
   - "rm -f /etc/apt/sources.list.d/tools_pool_repo.list"
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - dpkg --list | grep '^ii' > /installed_packages.txt
 %{ endif }
 
 %{ if image == "debian12o" ~}
@@ -708,7 +708,7 @@ runcmd:
   # Debian systems do not honour DHCP's domain-search by default
   - "sed -i -E 's/^hosts:.*/hosts:          files dns myhostname/' /etc/nsswitch.conf"
   - systemctl start qemu-guest-agent
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - dpkg --list | grep '^ii' > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "almalinux8o" ~}
@@ -733,7 +733,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "almalinux9o" ~}
@@ -761,7 +761,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent dbus-tools"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "almalinux10o" }
@@ -786,7 +786,7 @@ runcmd:
   - echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
   - systemctl restart sshd
   - "dnf -y install venv-salt-minion avahi nss-mdns qemu-guest-agent dbus-tools"
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif }
 
 %{ if image == "amazonlinux2o" ~}
@@ -814,7 +814,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "amazonlinux2023o" ~}
@@ -860,7 +860,7 @@ runcmd:
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent"
 %{ endif ~}
   - systemctl start qemu-guest-agent
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "libertylinux9o" ~}
@@ -910,7 +910,7 @@ runcmd:
   - dnf -y install salt-minion avahi nss-mdns qemu-guest-agent dbus-tools tar
 %{ endif ~}
   - systemctl enable --now qemu-guest-agent
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "openeuler2403o" ~}
@@ -931,7 +931,7 @@ runcmd:
   - dnf -y install salt-minion avahi nss-mdns qemu-guest-agent
 %{ endif }
   - systemctl start qemu-guest-agent
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif }
 
 %{ if image == "rocky8o" ~}
@@ -957,7 +957,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install avahi nss-mdns salt-minion dbus-tools"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "rocky9o" ~}
@@ -985,7 +985,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install avahi nss-mdns salt-minion dbus-tools"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "rocky10o" }
@@ -1013,7 +1013,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install avahi nss-mdns qemu-guest-agent salt-minion dbus-tools"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif }
 
 %{ if image == "oraclelinux8o" ~}
@@ -1038,7 +1038,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install avahi nss-mdns qemu-guest-agent salt-minion"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "oraclelinux9o" ~}
@@ -1066,7 +1066,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent dbus-tools tar"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
 %{ if image == "oraclelinux10o" }
@@ -1094,7 +1094,7 @@ runcmd:
 %{ else ~}
   - "dnf -y install salt-minion avahi nss-mdns qemu-guest-agent dbus-tools tar"
 %{ endif ~}
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif }
 
 %{ if image == "opensuse156armo" || image == "opensuse160armo" ~}
@@ -1124,6 +1124,6 @@ runcmd:
   # WORKAROUND: cloud-init in opensuse 15.6 and 16.0 does not take care of the following
   - echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/root.conf
   - systemctl restart sshd.service
-  - "rpm --version &>/dev/null && rpm -qa | sort >/installed_packages.txt || dpkg --list | grep '^ii' >/installed_packages.txt"
+  - rpm -qa | sort > /installed_packages.txt
 %{ endif ~}
 
