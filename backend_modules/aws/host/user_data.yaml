@@ -37,6 +37,8 @@ runcmd:
 
 %{ if image == "opensuse160o" ~}
 runcmd:
+  - zypper addrepo -G -e http://download.opensuse.org/repositories/systemsmanagement:/Uyuni:/Stable:/openSUSE_Leap_16-Uyuni-Client-Tools/openSUSE_Leap_16.0/ temp_tools_pool_repo
+  - zypper ref
 %{ if install_salt_bundle ~}
   - zypper in --allow-vendor-change --no-confirm venv-salt-minion
 %{ else ~}
@@ -45,6 +47,10 @@ runcmd:
   - zypper removerepo --all
   - zypper --non-interactive modifyservice --disable openSUSE || true
   - zypper --non-interactive removeservice openSUSE || true
+  # WORKAROUND: cloud-init in SLES 16 does not take care of the following
+  - echo "PermitRootLogin yes" >> /etc/ssh/sshd_config.d/root.conf
+  - echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config.d/root.conf
+  - systemctl restart sshd
 
 %{ endif ~}
 
